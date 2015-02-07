@@ -1,3 +1,4 @@
 platforms
 www/bower_components
-
+**/*.iml
+.idea
