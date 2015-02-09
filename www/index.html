@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<!--
+<!DOCTYPE html><!--
     Licensed to the Apache Software Foundation (ASF) under one
     or more contributor license agreements.  See the NOTICE file
     distributed with this work for additional information
@@ -18,25 +17,40 @@
     under the License.
 -->
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="msapplication-tap-highlight" content="no" />
-        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <title>tech bus</title>
-    </head>
-    <body>
-        <div class="app">
-            <h1>tech bus</h1>
-            <div id="deviceready">
-              The closest bus stop to your location is <span id="closestStop"></span>.
-              <div id="busses"></div>
-            </div>
-        </div>
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-    </body>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="format-detection" content="telephone=no"/>
+  <meta name="msapplication-tap-highlight" content="no"/>
+  <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+  <meta name="viewport"
+        content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi"/>
+  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" type="text/css" href="css/index.css"/>
+  <title>tech bus</title>
+</head>
+<body>
+<div class="app">
+  <h1>tech bus</h1>
+
+  <div id="loading">
+    <i class="fa fa-spinner fa-5x fa-spin"></i>
+    Loading bus information
+  </div>
+  <div id="closest" class="hidden">
+    The closest stop to you is <span id="closestStop"></span>.
+  </div>
+  <div id="notClosest" class="hidden">
+    <span id="notClosestStop"></span>
+  </div>
+  <div id="routePredictions">
+    <div id="blue" class="hidden stopInfo">The next blue route buses will arrive in <span id="blueMinutes"></span> minutes.</div>
+    <div id="green" class="hidden stopInfo">The next green route buses will arrive in <span id="greenMinutes"></span> minutes.</div>
+    <div id="red" class="hidden stopInfo">The next red route buses will arrive in <span id="redMinutes"></span> minutes.</div>
+    <div id="trolley" class="hidden stopInfo">The next trolleys will arrive in <span id="trolleyMinutes"></span> minutes.</div>
+  </div>
+</div>
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+</body>
 </html>
