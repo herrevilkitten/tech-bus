@@ -193,6 +193,7 @@
                 var stop = app.arrangedStops[app.currentPage][0];
                 console.log('Stop is', JSON.stringify(stop));
                 $('#loading').hide();
+                $('#messages').show();
                 if (app.currentPage == 0) {
                     $('#closest').show();
                     $('#notClosest').hide();
@@ -212,16 +213,12 @@
                 });
             },
 
-            // deviceready Event Handler
-            //
-            // The scope of 'this' is the event. In order to call the 'receivedEvent'
-            // function, we must explicitly call 'app.receivedEvent(...);'
-            onDeviceReady: function() {
+            refresh: function() {
                 var stopPromise,
                     positionPromise;
 
-                console.log('Setting up event listeners');
-                document.addEventListener('swipedown', app.exitApplication);
+                $('#loading').show();
+                $('#messages').hide();
 
                 stopPromise = app.gatherBusStops()
                     .then(function(stops) {
@@ -237,17 +234,54 @@
                     .when(stopPromise, positionPromise)
                     .then(function() {
                         app.calculateDistanceToStops();
-                        app
-                            .gatherStopPredictions(app.closest)
-                            .then(function(predictions) {
-                                app.currentPredictions = predictions;
-                                console.log('Predictions are', JSON.stringify(predictions));
-                                app.updateInterface();
-                            })
-                            .fail(function() {
-                                console.log('Unable to gather stop predictions');
-                            });
+                        app.updatePage();
                     });
+
+            },
+
+            updatePage: function() {
+                $('#loading').show();
+                $('#messages').hide();
+                app
+                    .gatherStopPredictions(app.arrangedStops[app.currentPage])
+                    .then(function(predictions) {
+                        app.currentPredictions = predictions;
+                        console.log('Predictions are', JSON.stringify(predictions));
+                        app.updateInterface();
+                    })
+                    .fail(function() {
+                        console.log('Unable to gather stop predictions');
+                    });
+            },
+
+            previousPage: function() {
+                if (app.currentPage == 0) {
+                    return;
+                }
+                app.currentPage--;
+                app.updatePage();
+            },
+
+            nextPage: function() {
+                if (app.currentPage == app.arrangedStops.length - 1) {
+                    return;
+                }
+                app.currentPage++;
+                app.updatePage();
+            },
+
+            // deviceready Event Handler
+            //
+            // The scope of 'this' is the event. In order to call the 'receivedEvent'
+            // function, we must explicitly call 'app.receivedEvent(...);'
+            onDeviceReady: function() {
+                console.log('Setting up event listeners');
+                document.addEventListener('swipedown', app.exitApplication);
+                document.addEventListener('swiperight', app.previousPage);
+                document.addEventListener('swipeleft', app.nextPage);
+                document.addEventListener('tap', app.refresh);
+
+                app.refresh();
             }
         };
 
