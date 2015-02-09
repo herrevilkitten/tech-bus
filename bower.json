@@ -1,0 +1,21 @@
+{
+  "name": "tech-bus",
+  "version": "0.0.0",
+  "homepage": "https://github.com/herrevilkitten/tech-bus",
+  "authors": [
+    "Eric Kiddder <evilkitten.org@gmail.com>"
+  ],
+  "license": "Apache 2.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "www/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "font-awesome": "~4.3.0",
+    "jquery": "~2.1.3"
+  }
+}
