@@ -40,6 +40,7 @@
             if (value == null || value == undefined) {
                 return null;
             }
+            current = value;
         }
         return value;
     }
@@ -148,14 +149,14 @@
                         app.arrangedStops[stopIndex] = [];
                     }
                     app.arrangedStops[stopIndex].push(item);
+                    lastDistance = item.distance;
                 });
 
                 console.log('Closest stop is', JSON.stringify(app.closest));
             },
 
             gatherStopPredictions: function(stops) {
-                var predictions = {},
-                    prediction;
+                var predictions = {};
 
                 var deferred = $.Deferred(),
                     resolvedCount = 0;
@@ -165,7 +166,7 @@
                  "stop_lon":"-84.404191","trip_id":"Counterclo","reference_stop_id":"1"}
                  */
                 $.each(stops, function(index, item) {
-                    prediction = {
+                    var prediction = {
                         stop_name: item.stop_name,
                         stop_id: item.stop_id,
                         times: [],
@@ -174,8 +175,10 @@
 
                     prediction.promise = $.getJSON(predictURL + item.route_id + '?stop=' + item.stop_id);
                     prediction.promise.then(function(results) {
-                        console.log('Prediction result for', item.route_id + '/' + item.stop_id + ':', JSON.stringify(results));
-                        prediction.times = getObjectAtPath(results, "query.results.p") || [];
+                        var times = getObjectAtPath(results, "query.results.p") || [];
+                        console.log('Prediction result for', item.route_id + '/' + item.stop_id + ':', JSON.stringify(results), times);
+                        prediction.times = times;
+                        prediction.promise = null;
                         if (++resolvedCount == stops.length) {
                             deferred.resolve(predictions);
                         }
@@ -192,6 +195,7 @@
             updateInterface: function() {
                 var stop = app.arrangedStops[app.currentPage][0];
                 console.log('Stop is', JSON.stringify(stop));
+                console.log('Predictions are', JSON.stringify(app.currentPredictions));
                 $('#loading').hide();
                 $('#messages').show();
                 if (app.currentPage == 0) {
@@ -206,8 +210,9 @@
 
                 $('.stopInfo').hide();
                 $.each(app.currentPredictions, function(index, item) {
-                    var stopClass = '.' + index,
-                        stopMessage = index + 'Minutes';
+                    console.log('Displaying predictions for', index, ':', JSON.stringify(item));
+                    var stopClass = '#' + index,
+                        stopMessage = '#' + index + 'Minutes';
                     $(stopClass).show();
                     $(stopMessage).html(item.times.join(', '));
                 });
@@ -240,13 +245,14 @@
             },
 
             updatePage: function() {
+                console.log('Arranged Stops:', JSON.stringify(app.arrangedStops));
+                console.log('Arranged Stops:', app.arrangedStops);
                 $('#loading').show();
                 $('#messages').hide();
                 app
                     .gatherStopPredictions(app.arrangedStops[app.currentPage])
                     .then(function(predictions) {
                         app.currentPredictions = predictions;
-                        console.log('Predictions are', JSON.stringify(predictions));
                         app.updateInterface();
                     })
                     .fail(function() {
